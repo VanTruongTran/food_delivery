@@ -45,7 +45,8 @@ public class SecurityConfig {
                 .disable()
                 .authorizeRequests()//những request phải thông qua cấu hình chứng thực
                 .antMatchers("/signin").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+                .and().formLogin().loginPage("/login.html");
         return http.build();
     }
 }
