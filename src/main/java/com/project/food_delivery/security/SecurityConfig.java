@@ -1,6 +1,5 @@
 package com.project.food_delivery.security;
 
-import com.project.food_delivery.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

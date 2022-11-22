@@ -2,7 +2,6 @@ package com.project.food_delivery.controller;
 
 import com.project.food_delivery.payload.request.SigninRequest;
 import com.project.food_delivery.payload.response.DataResponse;
-import com.project.food_delivery.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,15 +17,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/signin")
 public class LoginController {
     @Autowired
-    LoginService loginService;
-
-    @Autowired
     AuthenticationManager authenticationManager;
 
     @PostMapping("")
     public ResponseEntity<DataResponse> signin(@RequestBody SigninRequest signinRequest) {
-//        boolean success = loginService.checkLogin(signinRequest.getEmail(), signinRequest.getPassword());
-
         UsernamePasswordAuthenticationToken authenticationRequest
                 = new UsernamePasswordAuthenticationToken(signinRequest.getEmail(), signinRequest.getPassword());
 
