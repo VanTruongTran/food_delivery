@@ -26,13 +26,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         UserEntity userEntity = loginService.checkLogin(email);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        boolean isMatchPassword = passwordEncoder.matches(password, userEntity.getPassword());
 
-        if (userEntity != null && isMatchPassword) {
-            return new UsernamePasswordAuthenticationToken(userEntity.getEmail(), userEntity.getPassword(), new ArrayList<>());
-        } else {
-            return null;
+
+        if (userEntity != null) {
+            if (passwordEncoder.matches(password, userEntity.getPassword())) {
+                return new UsernamePasswordAuthenticationToken(userEntity.getEmail(), userEntity.getPassword(), new ArrayList<>());
+            }
         }
+        return null;
     }
 
     @Override
