@@ -1,5 +1,6 @@
 package com.project.food_delivery.controller;
 
+import com.project.food_delivery.jwt.JwtTokenHelper;
 import com.project.food_delivery.payload.request.SigninRequest;
 import com.project.food_delivery.payload.response.DataResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +20,32 @@ public class LoginController {
     @Autowired
     AuthenticationManager authenticationManager;
 
+    @Autowired
+    JwtTokenHelper jwtTokenHelper;
+
     @PostMapping("")
-    public ResponseEntity<DataResponse> signin(@RequestBody SigninRequest signinRequest) {
+    public ResponseEntity<?> signin(@RequestBody SigninRequest signinRequest) {
         UsernamePasswordAuthenticationToken authenticationRequest
                 = new UsernamePasswordAuthenticationToken(signinRequest.getEmail(), signinRequest.getPassword());
 
         Authentication authentication = authenticationManager.authenticate(authenticationRequest);
 
+        //nếu authentication = null thì server sẽ trả về lỗi 403 và không chạy code bên dưới
+
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(authentication);
 
+        //mã hóa chuỗi email thành chuỗi token
+        String token = jwtTokenHelper.generateToken(signinRequest.getEmail());
+
+        //giải mã token
+        String decodeToken = jwtTokenHelper.decodeToken(token);
 
         DataResponse dataResponse = new DataResponse();
+        dataResponse.setSuccess(true);
         dataResponse.setStatus(HttpStatus.OK.value());
+        dataResponse.setData(token);
+        dataResponse.setDescription(decodeToken);
         return new ResponseEntity<>(dataResponse, HttpStatus.OK);
     }
 

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
-//nhận vào username và password từ người dùng để tiến hành xử lý
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
     @Autowired
@@ -24,9 +23,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String email = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        UserEntity userEntity = loginService.checkLogin(email);
+        UserEntity userEntity = loginService.getUserByEmail(email);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
 
         if (userEntity != null) {
             if (passwordEncoder.matches(password, userEntity.getPassword())) {
