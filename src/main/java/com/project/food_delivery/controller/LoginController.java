@@ -3,6 +3,7 @@ package com.project.food_delivery.controller;
 import com.project.food_delivery.jwt.JwtTokenHelper;
 import com.project.food_delivery.payload.request.SigninRequest;
 import com.project.food_delivery.payload.response.DataResponse;
+import com.project.food_delivery.payload.response.DataTokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,12 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RequestMapping("/signin")
 public class LoginController {
+    //thời gian hết hạn của token (milisec)
+    private long expiredTime = 8 * 60 * 60 * 1000;
+
+    //thời gian hết hạn của refresh token (milisec)
+    private long refreshExpiredTime = 80 * 60 * 60 * 1000;
+
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -36,16 +43,20 @@ public class LoginController {
         securityContext.setAuthentication(authentication);
 
         //mã hóa chuỗi email thành chuỗi token
-        String token = jwtTokenHelper.generateToken(signinRequest.getEmail());
+        String token = jwtTokenHelper.generateToken(signinRequest.getEmail(),"authen", expiredTime);
 
-        //giải mã token
-        String decodeToken = jwtTokenHelper.decodeToken(token);
+        //tạo refresh token
+        String refreshToken = jwtTokenHelper.generateToken(signinRequest.getEmail(),"refresh", refreshExpiredTime);
+
+        DataTokenResponse dataTokenResponse = new DataTokenResponse();
+        dataTokenResponse.setToken(token);
+        dataTokenResponse.setRefreshToken(refreshToken);
 
         DataResponse dataResponse = new DataResponse();
         dataResponse.setSuccess(true);
         dataResponse.setStatus(HttpStatus.OK.value());
-        dataResponse.setData(token);
-        dataResponse.setDescription(decodeToken);
+        dataResponse.setData(dataTokenResponse);
+        dataResponse.setDescription("");
         return new ResponseEntity<>(dataResponse, HttpStatus.OK);
     }
 

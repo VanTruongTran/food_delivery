@@ -1,5 +1,6 @@
 package com.project.food_delivery.jwt;
 
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
@@ -28,14 +30,19 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         if (token != null) {
             //kiểm tra chuỗi token có phải do hệ thống tạo ra hay không
             if (jwtTokenHelper.validateToken(token)) {
-                String email = jwtTokenHelper.decodeToken(token);
+                String json = jwtTokenHelper.decodeToken(token);
 
-                System.out.println(token);
-                System.out.println(email);
+                Gson gson = new Gson();
+                Map<String, Object> objectData = gson.fromJson(json, Map.class);
 
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, "", new ArrayList<>());
-                SecurityContext securityContext = SecurityContextHolder.getContext();
-                securityContext.setAuthentication(authenticationToken);
+                System.out.println("CHECK TYPE:" + objectData.get("type"));
+
+                if (StringUtils.hasText(objectData.get("type").toString())
+                        && !objectData.get("type").toString().equals("refresh")) {
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken("", "", new ArrayList<>());
+                    SecurityContext securityContext = SecurityContextHolder.getContext();
+                    securityContext.setAuthentication(authenticationToken);
+                }
             }
         }
 

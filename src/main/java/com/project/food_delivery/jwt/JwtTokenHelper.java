@@ -1,5 +1,6 @@
 package com.project.food_delivery.jwt;
 
+import com.google.gson.Gson;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -7,23 +8,29 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtTokenHelper {
-    //thời gian hết hạn (milisec)
-    private long expiredTime = 8 * 60 * 60 * 1000;
-
     //chuỗi BASE64 (>= 256 bits)
     private String stringKey = "U3ByaW5nIEJvb3QgaXMgYW4gb3BlbiBzb3VyY2UgSmF2YS1iYXNlZCBmcmFtZXdvcmsgdXNlZCB0byBjcmVhdGUgYSBtaWNybyBTZXJ2aWNl";
 
     //phương thức mã hóa dữ liệu thành chuỗi token
-    public String generateToken(String data) {
+    public String generateToken(String data, String type, long expiredTime) {
         Date createdDate = new Date();
         Date expiredDate = new Date(createdDate.getTime() + expiredTime);
         SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(stringKey));
 
+        Map<String, Object> subjectData = new HashMap<>();
+        subjectData.put("email", data);
+        subjectData.put("type", type);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(subjectData);
+
         return Jwts.builder()
-                .setSubject(data)//lưu trữ dữ liệu vào trong token (kiểu string)
+                .setSubject(json)//lưu trữ dữ liệu vào trong token (kiểu string)
                 .setIssuedAt(createdDate)//thời gian tạo token
                 .setExpiration(expiredDate)//thời gian token hết hạn
                 .signWith(secretKey, SignatureAlgorithm.HS256)//thuật toán mã hóa và secret key

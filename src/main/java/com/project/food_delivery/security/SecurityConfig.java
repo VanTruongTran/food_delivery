@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()//những request phải thông qua cấu hình chứng thực
                 .antMatchers("/signin").permitAll()
+                .antMatchers("/refresh-token").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/login.html");
