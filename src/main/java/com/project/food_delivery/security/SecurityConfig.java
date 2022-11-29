@@ -48,7 +48,8 @@ public class SecurityConfig {
                 .and()
                 .formLogin().loginPage("/login.html");
 
-        //thêm filter trước một filter nào đó
+        //thêm filter JwtTokenFilter có nhiệm vụ kiểm tra request của người dùng trước khi nó tới đích
+        //filter JwtTokenFilter sẽ lấy Header Authorization ra và kiểm tra xem chuỗi JWT người dùng gửi lên có hợp lệ không
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
