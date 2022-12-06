@@ -17,3 +17,10 @@ spring:
 server:
   servlet:
     context-path: /api
+
+#STORE FILE PATH CONFIG:
+file:
+  upload-dir: C:\Users\ASUS\Desktop\nn\store\file\sql
+
+  #@ConfigurationProperties//tự map key bên application thành đối tượng
+  #@Value(${keyname})//lấy giá trị bên application thành biến
