@@ -22,9 +22,6 @@ public class FoodOrderEntity implements Serializable {
     @Column(name = "quality")
     private Integer quality;
 
-    @Column(name = "id_promo")
-    private Integer idPromo;
-
     /* CONSTRUCTORS */
     public FoodOrderEntity() {
 
@@ -61,13 +58,5 @@ public class FoodOrderEntity implements Serializable {
 
     public void setQuality(Integer quality) {
         this.quality = quality;
-    }
-
-    public Integer getIdPromo() {
-        return idPromo;
-    }
-
-    public void setIdPromo(Integer idPromo) {
-        this.idPromo = idPromo;
     }
 }

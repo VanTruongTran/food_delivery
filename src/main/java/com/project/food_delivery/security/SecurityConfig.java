@@ -46,7 +46,8 @@ public class SecurityConfig {
                 .antMatchers("/signin").permitAll()
                 .antMatchers("/refresh-token").permitAll()
                 .antMatchers("/file/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
+//                .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/login.html");
 
